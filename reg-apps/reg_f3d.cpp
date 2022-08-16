@@ -158,6 +158,7 @@ void Usage(char *exec)
     printf("\n*** GPU-related options:\n");
     printf("\t-mem\t\t\tDisplay an approximate memory requierment and exit\n");
     printf("\t-gpu \t\t\tTo use the GPU implementation [no]\n");
+    printf("\t-device <int>\t\tSpecify GPU device to use\n");
 #endif
     printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
     printf("For further description of the penalty term, use: %s -helpPenalty\n", exec);
@@ -258,12 +259,29 @@ int main(int argc, char **argv)
         }
 #ifdef _USE_CUDA
         if(strcmp(argv[i], "-gpu")==0 || strcmp(argv[i], "-mem")==0){
+	    // Check if a particular desired device was specified
+            int gpudevice = -1;
+	    for ( int j = 1; j < argc; j++ ) {
+	        if(strcmp(argv[j], "-device")==0 || (strcmp(argv[j],"--device")==0)) {
+		    gpudevice=atoi(argv[++j]);
+		    printf("[NiftyReg CUDA INFO] GPU device requested %d\n", gpudevice);
+		}
+	    }
+	    if ( gpudevice >= 0 ) {
+	         // Use specified device
+	        cuInit(0);
+	        cudaSetDevice(gpudevice);
+	        cuCtxCreate(&ctx, CU_CTX_SCHED_SPIN, gpudevice);
+	        REG=new reg_f3d_gpu(referenceImage->nt,floatingImage->nt);
+	    }
+	    else { // Use max gflops device
             // Set up the cuda card and display some relevant information and check if the card is suitable
 			if(cudaCommon_setCUDACard(&ctx, true)){
                 fprintf(stderr,"\n[NiftyReg CUDA ERROR] Error while detecting a CUDA card\n");
                 fprintf(stderr,"[NiftyReg CUDA WARNING] GPU implementation has been turned off.\n");
             }
             else REG=new reg_f3d_gpu(referenceImage->nt,floatingImage->nt);
+	    }
             break;
         }
 #endif // _USE_CUDA
@@ -580,6 +598,9 @@ int main(int argc, char **argv)
         else if(strcmp(argv[i], "-mem")==0){
             checkMemory=true;
         }
+	else if(strcmp(argv[i], "-device")==0) {
+	    i++;
+	}
 #endif
         else{
             fprintf(stderr,"Err:\tParameter %s unknown.\n",argv[i]);
