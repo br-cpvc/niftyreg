@@ -142,30 +142,30 @@ if(USE_CUDA)
         if(${CUDA_HOST_COMPILER} MATCHES "Clang")
             message(FATAL_ERROR "The CUDA version of NiftyReg cannot be used with a clang based compiler")
         endif(${CUDA_HOST_COMPILER} MATCHES "Clang")
-        # Compile an executable to check if there is at least one suitable graphical card
-        try_run(RUN_RESULT_VAR COMPILE_RESULT_VAR
-                ${CMAKE_BINARY_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}/cuda/checkCudaCard.cpp
-                CMAKE_FLAGS
-                -DINCLUDE_DIRECTORIES:STRING=${CUDA_INCLUDE_DIRS}
-                -DLINK_LIBRARIES:STRING=${CUDA_LIBRARIES}
-                COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT_VAR
-                RUN_OUTPUT_VARIABLE RUN_OUTPUT_VAR
-        )
-        # Check if the executable could not compile
-        if(NOT COMPILE_RESULT_VAR)
-            message(STATUS "The code to check the presence of a CUDA-enabled card failed.")
-            message(STATUS "The USE_CUDA flag has been turned OFF.")
-            set(USE_CUDA false)
-        else(NOT COMPILE_RESULT_VAR)
-            # Check if the executable return failure
-            if(RUN_RESULT_VAR)
-                message(STATUS "No CUDA-enabled card has been detected.")
-                message(STATUS "Result message: ${RUN_RESULT_VAR}")
-                message(STATUS "Error message: ${RUN_OUTPUT_VAR}")
-                message(STATUS "The USE_CUDA flag has been turned OFF.")
-                set(USE_CUDA false)
-            else(RUN_RESULT_VAR)
+        ## Compile an executable to check if there is at least one suitable graphical card
+        #try_run(RUN_RESULT_VAR COMPILE_RESULT_VAR
+        #        ${CMAKE_BINARY_DIR}
+        #        ${CMAKE_CURRENT_SOURCE_DIR}/cuda/checkCudaCard.cpp
+        #        CMAKE_FLAGS
+        #        -DINCLUDE_DIRECTORIES:STRING=${CUDA_INCLUDE_DIRS}
+        #        -DLINK_LIBRARIES:STRING=${CUDA_LIBRARIES}
+        #        COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT_VAR
+        #        RUN_OUTPUT_VARIABLE RUN_OUTPUT_VAR
+        #)
+        ## Check if the executable could not compile
+        #if(NOT COMPILE_RESULT_VAR)
+        #    message(STATUS "The code to check the presence of a CUDA-enabled card failed.")
+        #    message(STATUS "The USE_CUDA flag has been turned OFF.")
+        #    set(USE_CUDA false)
+        #else(NOT COMPILE_RESULT_VAR)
+        #    # Check if the executable return failure
+        #    if(RUN_RESULT_VAR)
+        #        message(STATUS "No CUDA-enabled card has been detected.")
+        #        message(STATUS "Result message: ${RUN_RESULT_VAR}")
+        #        message(STATUS "Error message: ${RUN_OUTPUT_VAR}")
+        #        message(STATUS "The USE_CUDA flag has been turned OFF.")
+        #        set(USE_CUDA false)
+        #    else(RUN_RESULT_VAR)
                 # Check if ptxas information should be displayed
                 set(CUDA_CAPABILITY "" CACHE STRING "CUDA capability to use to generate the ptxas information (1.0, 2.0, 3.0) [0]")
                 if(CUDA_CAPABILITY EQUAL "1.0")
@@ -180,9 +180,9 @@ if(USE_CUDA)
                 endif(CUDA_CAPABILITY EQUAL "1.0")
                 # The CUDA implementation is used
                 add_definitions(-D_USE_CUDA)
-                message(STATUS "Found CUDA and a CUDA-enabled card - the GPU code will be compiled.")
-            endif(RUN_RESULT_VAR)
-        endif(NOT COMPILE_RESULT_VAR)
+        #        message(STATUS "Found CUDA and a CUDA-enabled card - the GPU code will be compiled.")
+        #    endif(RUN_RESULT_VAR)
+        #endif(NOT COMPILE_RESULT_VAR)
     else(CUDA_FOUND)
         message(FATAL_ERROR "CUDA not found. Please turn the USE_CUDA flag off or set the variables manually.")
     endif(CUDA_FOUND)
