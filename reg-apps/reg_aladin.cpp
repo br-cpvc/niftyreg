@@ -273,8 +273,8 @@ int main(int argc, char **argv)
         REG = new reg_aladin_sym<PrecisionTYPE>;
         if ( (referenceMaskFlag && !floatingMaskName) || (!referenceMaskFlag && floatingMaskName) )
         {
-            fprintf(stderr,"[NiftyReg Warning] You have one image mask option turned on but not the other.\n");
-            fprintf(stderr,"[NiftyReg Warning] This will affect the degree of symmetry achieved.\n");
+            fprintf(stdout,"[NiftyReg Warning] You have one image mask option turned on but not the other.\n");
+            fprintf(stdout,"[NiftyReg Warning] This will affect the degree of symmetry achieved.\n");
         }
     }
     else
