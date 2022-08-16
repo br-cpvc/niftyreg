@@ -183,6 +183,10 @@ if(USE_CUDA)
         #        message(STATUS "Found CUDA and a CUDA-enabled card - the GPU code will be compiled.")
         #    endif(RUN_RESULT_VAR)
         #endif(NOT COMPILE_RESULT_VAR)
+
+        # memcpy workaround, for it to build on ubuntu 16.04
+        # see: https://github.com/BVLC/caffe/issues/4046
+        set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} \"-D_FORCE_INLINES\" ")
     else(CUDA_FOUND)
         message(FATAL_ERROR "CUDA not found. Please turn the USE_CUDA flag off or set the variables manually.")
     endif(CUDA_FOUND)
