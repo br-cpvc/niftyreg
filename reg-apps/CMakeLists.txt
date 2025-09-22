@@ -1,20 +1,38 @@
 #-----------------------------------------------------------------------------
 add_executable(reg_average reg_average.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_average PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_average _reg_globalTransformation _reg_maths _reg_tools _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 add_executable(reg_tools reg_tools.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_tools PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_tools _reg_resampling _reg_localTransformation _reg_tools _reg_globalTransformation _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 add_executable(reg_resample reg_resample.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_resample PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_resample _reg_resampling _reg_localTransformation _reg_tools _reg_globalTransformation _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 add_executable(reg_ppcnr reg_ppcnr.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_ppcnr PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_ppcnr _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 add_executable(reg_transform reg_transform.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_transform PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_transform _reg_thinPlateSpline _reg_resampling _reg_localTransformation _reg_tools _reg_globalTransformation _reg_maths _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 add_executable(reg_jacobian reg_jacobian.cpp)
+if(LINK_STATIC)
+    set_target_properties(reg_jacobian PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_jacobian _reg_resampling _reg_localTransformation _reg_tools _reg_globalTransformation _reg_ReadWriteImage)
 #-----------------------------------------------------------------------------
 if(USE_CUDA)
@@ -22,7 +40,18 @@ if(USE_CUDA)
     include_directories(${CUDA_TOOLKIT_ROOT_DIR}/include)
     add_executable(reg_f3d reg_f3d.cpp)
     find_library(CUDART_LIBRARY cudart_static ${CUDA_TOOLKIT_ROOT_DIR}/lib64)
+    if(LINK_STATIC)
+        set_target_properties(reg_f3d PROPERTIES LINK_FLAGS "-static-libgcc -static-libstdc++")
+        target_link_libraries(reg_f3d _reg_f3d
+            ${CUDART_LIBRARY}
+            cuda
+            /usr/lib/gcc/x86_64-linux-gnu/4.8/libgomp.a
+            dl
+            rt
+        )
+    else(LINK_STATIC)
     target_link_libraries(reg_f3d _reg_f3d ${CUDART_LIBRARY} cuda pthread dl rt)
+    endif(LINK_STATIC)
   else(UNIX)
           cuda_add_executable(reg_f3d reg_f3d.cpp)
           target_link_libraries(reg_f3d _reg_f3d ${CUDA_CUDA_LIBRARY})
@@ -37,6 +66,9 @@ endif(USE_CUDA)
 #else(USE_CUDA)
         add_executable(reg_aladin reg_aladin.cpp)
 #endif(USE_CUDA)
+if(LINK_STATIC)
+    set_target_properties(reg_aladin PROPERTIES LINK_FLAGS "-static")
+endif(LINK_STATIC)
 target_link_libraries(reg_aladin _reg_aladin)
 #-----------------------------------------------------------------------------
 set(MODULE_LIST
