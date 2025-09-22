@@ -19,6 +19,7 @@ target_link_libraries(reg_jacobian _reg_resampling _reg_localTransformation _reg
 #-----------------------------------------------------------------------------
 if(USE_CUDA)
   if(UNIX)
+    include_directories(${CUDA_TOOLKIT_ROOT_DIR}/include)
     add_executable(reg_f3d reg_f3d.cpp)
     find_library(CUDART_LIBRARY cudart_static ${CUDA_TOOLKIT_ROOT_DIR}/lib64)
     target_link_libraries(reg_f3d _reg_f3d ${CUDART_LIBRARY} cuda pthread dl rt)
@@ -31,11 +32,11 @@ else(USE_CUDA)
 	target_link_libraries(reg_f3d _reg_f3d)
 endif(USE_CUDA)
 #-----------------------------------------------------------------------------
-if(USE_CUDA)
-        cuda_add_executable(reg_aladin reg_aladin.cpp)
-else(USE_CUDA)
+#if(USE_CUDA)
+#        cuda_add_executable(reg_aladin reg_aladin.cpp)
+#else(USE_CUDA)
         add_executable(reg_aladin reg_aladin.cpp)
-endif(USE_CUDA)
+#endif(USE_CUDA)
 target_link_libraries(reg_aladin _reg_aladin)
 #-----------------------------------------------------------------------------
 set(MODULE_LIST
