@@ -171,6 +171,9 @@ else()
     set(NAME _reg_cudainfo)
     add_library(${NAME} ${NIFTYREG_LIBRARY_TYPE} ${NAME}.cu)
     target_link_libraries(${NAME} CUDA::cuda_driver)
+    if(BUILD_SHARED_LIBS)
+        target_link_libraries(${NAME} CUDA::cudart)
+    endif(BUILD_SHARED_LIBS)
     install(TARGETS ${NAME}
         RUNTIME DESTINATION lib
         LIBRARY DESTINATION lib
