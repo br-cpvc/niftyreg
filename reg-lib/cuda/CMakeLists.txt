@@ -148,6 +148,23 @@ if(USE_CUDA_PLUGIN)
 else()
     set(NAME _reg_cuda_kernels)
     add_library(${NAME} ${NIFTYREG_LIBRARY_TYPE} ${_reg_cuda_kernel_sources})
+    if(STATIC_LINK_CUDA_TOOLKIT)
+    find_library(CUSOLVER_LAPACK_STATIC_LIBRARY
+        NAMES cusolver_lapack_static
+        HINTS ${CUDAToolkit_LIBRARY_DIR}
+        REQUIRED
+    )
+    target_link_libraries(${NAME}
+        _reg_blockMatching
+        _reg_compute
+        _reg_content
+        _reg_measure
+        _reg_tools
+        CUDA::cuda_driver
+        CUDA::cusolver_static ${CUSOLVER_LAPACK_STATIC_LIBRARY}
+        CUDA::cublas_static CUDA::cublasLt_static
+    )
+    else(STATIC_LINK_CUDA_TOOLKIT)
     target_link_libraries(${NAME}
         _reg_blockMatching
         _reg_compute
@@ -156,6 +173,7 @@ else()
         _reg_tools
         CUDA::cuda_driver CUDA::cusolver CUDA::cublas
     )
+    endif(STATIC_LINK_CUDA_TOOLKIT)
     if(BUILD_SHARED_LIBS)
         target_link_libraries(${NAME} CUDA::cudart)
     endif(BUILD_SHARED_LIBS)
