@@ -82,7 +82,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/reg_aladin.h.in ${CMAKE_CURRENT_BINAR
 # Skipped in plugin mode: it links CUDA directly, which the plugin build's host targets never do.
 if(USE_CUDA AND NOT USE_CUDA_PLUGIN)
   add_executable(reg_benchmark reg_benchmark.cpp)
-  target_link_libraries(reg_benchmark _reg_aladin _reg_f3d CUDA::cudart)
+  target_link_libraries(reg_benchmark _reg_aladin _reg_f3d)
 endif()
 #-----------------------------------------------------------------------------
 set(MODULE_LIST
